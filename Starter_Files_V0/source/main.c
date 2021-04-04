@@ -68,10 +68,11 @@
 
 /*-----------------------------------------------------------*/
 
-TaskHandle_t Toggle_Handler  = NULL;
+TaskHandle_t LED_ONE_Handler  = NULL;
+TaskHandle_t LED_TWO_Handler  = NULL;
+TaskHandle_t LED_THREE_Handler = NULL;
 
-
-
+pinState_t Button_state ; 
 
 /* Constants to setup I/O and processor. */
 #define mainBUS_CLK_FULL	( ( unsigned char ) 0x01 )
@@ -88,23 +89,63 @@ TaskHandle_t Toggle_Handler  = NULL;
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
-/* Task to be created. */
-void vTaskToggle( void * pvParameters )
-{
-   
 
+/* Task to be created. */
+void vTask_LED_ONE( void * pvParameters )
+{
+	
     for( ;; )
     {
-				GPIO_write(PORT_0 , PIN0 , PIN_IS_HIGH ) ; 
-				vTaskDelay(1000);
-				GPIO_write(PORT_0 , PIN0 , PIN_IS_LOW );
-				vTaskDelay(1000);
+			
+				GPIO_write(PORT_0 , PIN1 , PIN_IS_HIGH ) ; 
+			vTaskDelay(100);
+				GPIO_write(PORT_0, PIN1 , PIN_IS_LOW) ;
+			vTaskDelay(100);
+				
     }
+		
+		
+
+	}
+
+
+/* Task to be created. */
+void vTask_LED_TWO( void * pvParameters )
+{
+	
+    for( ;; )
+    {
+			
+				GPIO_write(PORT_0 , PIN2 , PIN_IS_HIGH ) ; 
+			vTaskDelay(500);
+				GPIO_write(PORT_0, PIN2 , PIN_IS_LOW) ;
+			vTaskDelay(500);
+				
+    }
+		
+		
 
 	}
 
 	
+	/* Task to be created. */
+void vTask_LED_THREE( void * pvParameters )
+{
 	
+    for( ;; )
+    {
+			
+				GPIO_write(PORT_0 , PIN3 , PIN_IS_HIGH ) ; 
+			vTaskDelay(1000);
+				GPIO_write(PORT_0, PIN3 , PIN_IS_LOW) ;
+			vTaskDelay(1000);
+				
+    }
+		
+		
+
+	}
+
 /*
  * Application entry point:
  * Starts all the other tasks, then starts the scheduler. 
@@ -120,15 +161,31 @@ int main( void )
 	
     /* Create the task, storing the handle. */
      xTaskCreate(
-                    vTaskToggle,       /* Function that implements the task. */
-                    "Toggle_Task",          /* Text name for the task. */
+                    vTask_LED_ONE,       /* Function that implements the task. */
+                    "LED1_Task",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
                     1,/* Priority at which the task is created. */
-                    & Toggle_Handler );      /* Used to pass out the created task's handle. */
+                    & LED_ONE_Handler );      /* Used to pass out the created task's handle. */
 
 	
+		  xTaskCreate(
+                    vTask_LED_TWO,       /* Function that implements the task. */
+                    "LED2_Task",          /* Text name for the task. */
+                    100,      /* Stack size in words, not bytes. */
+                    ( void * ) 0,    /* Parameter passed into the task. */
+                    1,/* Priority at which the task is created. */
+                    & LED_TWO_Handler );      /* Used to pass out the created task's handle. */
+
 	
+		  xTaskCreate(
+                    vTask_LED_THREE,       /* Function that implements the task. */
+                    "LED3_Task",          /* Text name for the task. */
+                    100,      /* Stack size in words, not bytes. */
+                    ( void * ) 0,    /* Parameter passed into the task. */
+                    1,/* Priority at which the task is created. */
+                    & LED_THREE_Handler );      /* Used to pass out the created task's handle. */
+
 	
 
 	/* Now all the tasks have been started - start the scheduler.
